@@ -4,9 +4,9 @@ from World import *
 
 if __name__ != '__main__': quit()
 
-mainwin = Window('Ordinary Circuits')
+mainwin = Window('Sapid Circuits')
 mainwin.center()
 
-world = World(mainwin.master)
+world = World(mainwin.master, 0, 0)
 
 mainwin.run()
