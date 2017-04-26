@@ -5,13 +5,34 @@ from Utils import *
 class World:
     """class that contains 'in-window' logic, canvas, etc"""
 
-    def __init__(self, window, x, y):
+    def __init__(self, window):
         self.canvas = tk.Canvas(window, highlightthickness=0, bg='#FFF3A4')
         self.canvas.pack(side='top', fill='both', expand=True)
+        self.field = -1
+        self.scale = 1
 
     def clear(self):
         """remove all elements from canvas"""
         self.canvas.delete('all')
+
+    def clear_empty_tile(self):
+        """remove empty tiles from canvas"""
+        self.canvas.delete('emptyTile')
+
+    def inject_field(self, field):
+        """set up field in world"""
+        self.field = field
+
+    def draw(self):
+        """draw all empty tiles"""
+        if self.field == -1: return False
+        cur_x, cur_y = self.field.x, self.field.y
+        for col in range(int(self.field.height)):
+            for row in range(int(self.field.width)):
+                self.canvas.create_rectangle(cur_x, cur_y, cur_x + 10, cur_y + 10, tags='emptyTile')
+                cur_x += 10
+            cur_x = self.field.x
+            cur_y += 10
 
 
 class Field:
