@@ -1,38 +1,56 @@
 import tkinter as tk
+from Window import *
 from Utils import *
 
+canvas, field, scale = None, None, None
 
-class World:
-    """class that contains 'in-window' logic, canvas, etc"""
+def init(window, p_field=-1, p_scale=1):
+    """using to init World with params"""
+    global canvas, field, scale
+    canvas = tk.Canvas(window, highlightthickness=0, bg='#FFF3A4')
+    canvas.pack(side='top', fill='both', expand=True)
+    field = p_field
+    scale = p_scale
 
-    def __init__(self, window):
-        self.canvas = tk.Canvas(window, highlightthickness=0, bg='#FFF3A4')
-        self.canvas.pack(side='top', fill='both', expand=True)
-        self.field = -1
-        self.scale = 1
+def set_field(p_field):
+    """set up field in the world"""
+    global field
+    field = p_field
 
-    def clear(self):
-        """remove all elements from canvas"""
-        self.canvas.delete('all')
+def clear():
+    """remove all elements from canvas"""
+    global canvas
+    canvas.delete('all')
 
-    def clear_empty_tile(self):
-        """remove empty tiles from canvas"""
-        self.canvas.delete('emptyTile')
+def scale_(*args, **kwargs):
+    """universal function for set/get/change scale
+    if arg is num - change scale
+    if kwarg wiz index 'set' - set scale
+    and then return current scale"""
+    global scale
+    for arg in args:
+        if isinstance(scale, (int, float)):
+            scale += arg
+    for key in kwargs:
+        if key == 'set':
+            scale = kwargs[key]
+    return scale
 
-    def inject_field(self, field):
-        """set up field in world"""
-        self.field = field
+def draw():
+    global canvas, field, scale
+    if field == -1: return False
 
-    def draw(self):
-        """draw all empty tiles"""
-        if self.field == -1: return False
-        cur_x, cur_y = self.field.x, self.field.y
-        for col in range(int(self.field.height)):
-            for row in range(int(self.field.width)):
-                self.canvas.create_rectangle(cur_x, cur_y, cur_x + 10, cur_y + 10, tags='emptyTile')
-                cur_x += 10
-            cur_x = self.field.x
-            cur_y += 10
+    # possibly this is bad idea... idk
+    clear()
+
+    # redraw empty tiles
+    cx, cy = field.x, field.y
+    for col in range(int(field.height)):
+        for row in range(int(field.width)):
+            canvas.create_rectangle(cx, cy, cx+10*scale, cy+10*scale)
+            cx += (10*scale)
+        cx = field.x
+        cy += (10*scale)
 
 
 class Field:
