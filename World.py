@@ -1,16 +1,23 @@
-import tkinter as tk
+import Control
+from tkinter.messagebox import showerror
 from Window import *
 from Utils import *
 
 canvas, field, scale = None, None, None
 
-def init(window, p_field=-1, p_scale=1):
+def init(window, p_field=-1, p_scale=10):
     """using to init World with params"""
     global canvas, field, scale
     canvas = tk.Canvas(window, highlightthickness=0, bg='#FFF3A4')
     canvas.pack(side='top', fill='both', expand=True)
     field = p_field
     scale = p_scale
+
+    # auto setting control
+    try: set_control()
+    except:
+        showerror('Error', 'Control can\'t be set')
+
 
 def set_field(p_field):
     """set up field in the world"""
@@ -47,11 +54,21 @@ def draw():
     cx, cy = field.x, field.y
     for col in range(int(field.height)):
         for row in range(int(field.width)):
-            canvas.create_rectangle(cx, cy, cx+10*scale, cy+10*scale)
-            cx += (10*scale)
+            canvas.create_rectangle(cx, cy, cx+1000/scale, cy+1000/scale)
+            cx += (1000/scale)
         cx = field.x
-        cy += (10*scale)
+        cy += (1000/scale)
 
+def set_control():
+    """set control..."""
+    canvas.master.bind_all('<Key>', Control.pressed)
+
+def move_view(**kwargs):
+    for key in kwargs:
+        if key == 'x':
+            canvas.xview_scroll(int(kwargs[key]), 'units')
+        if key == 'y':
+            canvas.yview_scroll(int(kwargs[key]), 'units')
 
 class Field:
     """class contains tiles"""
