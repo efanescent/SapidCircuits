@@ -1,28 +1,29 @@
-import tkinter as tk
+from tkinter import *
+from graphics.GameRenderer import *
 
-
-class Window:
-    """work with windows environment"""
-
-    def __init__(self, title, win_w=800, win_h=480):
-        self.master = tk.Tk()
-        self.master.title(title)
-        self.master.geometry('%dx%d' % (win_w, win_h))
-        self.master.resizable(False, False)
-        self.width = win_w
-        self.height = win_h
-
-    def run(self):
-        """activate tkinter's loop"""
-        self.master.mainloop()
+class Window(Tk):
+    def __init__(self, width=800, height=480):
+        Tk.__init__(self)
+        self.geometry('%dx%d' % (width, height))
+        self.resizable(*(0 for i in range(2)))  # lmao
 
     def center(self):
-        """move window 2 center of screen
-        (have not tested with few screens)"""
-        self.master.update_idletasks()
-        w = self.master.winfo_screenwidth()   # screen's width
-        h = self.master.winfo_screenheight()  # screen's h8
-        x = int((w - self.width) / 2)
-        y = int((h - self.height) / 2)
-        self.master.geometry('%dx%d+%d+%d' % (self.width, self.height, x, y))
+        """set window on the center"""
+        self.update_idletasks()
+        w = self.winfo_width()
+        h = self.winfo_height()
+        x = int((self.winfo_screenwidth() - w) / 2)
+        y = int((self.winfo_screenheight() - h) / 2)
+        self.geometry('%dx%d+%d+%d' % (w, h, x, y))
 
+
+if __name__ == '__main__':
+    window = Window()
+    window.center()
+    canvas = Canvas(window, bg='yellow')
+    canvas.pack(side=TOP, fill=BOTH, expand=1)
+    renderer = CanvasRenderer()
+    renderer.setCanvas(canvas)
+    renderer.fillRect(0, 0, 200, 200, 'red', activedash=(4, 4))
+    renderer.drawString(100, 100, 'Awesome awesome', 'red')
+    window.mainloop()

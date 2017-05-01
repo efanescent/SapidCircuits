@@ -1,14 +1,28 @@
-import World
-import Control
+from GameInstance import *
 from Window import *
-from World import Field
+import tkinter as tk
+import time
 
-mainwin = Window('Sapid Circuits')
-mainwin.center()
+window = Window()
+canvas = tk.Canvas(window, bg='yellow')
+canvas.pack(side='top', fill='both', expand=1)
 
-World.init(mainwin.master, 4)
-field = Field(200, 150, 10, 10)
-World.set_field(field)
-World.draw()
+def run(tim):
+    l1 = tim
+    l2 = int(round(time.time() * 1000))
+    f = .001 * (l2 - l1)
+    print(l2 - l1)
+    instance.update()
+    FPSCounter.frame(f)
+    window.after(10, run, l2)
 
-mainwin.run()
+
+renderer = CanvasRenderer()
+renderer.setCanvas(canvas)
+instance = GameInstance(renderer)
+
+
+instance.draw()
+run(int(round(time.time() * 1000)))
+window.center()
+window.mainloop()
